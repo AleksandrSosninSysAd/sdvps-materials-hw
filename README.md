@@ -1,4 +1,4 @@
-
+ 
 # Домашнее задание 8.2. Что такое DevOps. CI/CD
 
 ## Задание 1: Настройка Jenkins и создание Freestyle Project
