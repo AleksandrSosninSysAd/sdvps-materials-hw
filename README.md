@@ -33,3 +33,57 @@ docker build . -t my-hello-world:v1
 
 ### Console Output
 ![Console Output](screenshots/console-output.png)
+
+---
+
+## Задание 2: Настройка Declarative Pipeline
+
+### Что было сделано:
+1. Создан новый проект типа **Pipeline** в Jenkins
+2. Сборка из Задания 1 переписана на декларативный синтаксис (Declarative Pipeline)
+3. Настроены этапы:
+   - **Git** — клонирование репозитория
+   - **Test** — запуск `go test .`
+   - **Build** — сборка Docker-образа с тегом `v$BUILD_NUMBER`
+
+### Скрипт Pipeline:
+```groovy
+pipeline {
+    agent any
+    
+    stages {
+        stage('Git') {
+            steps {
+                git branch: 'main', url: 'https://github.com/AleksandrSosninSysAd/sdvps-materials-hw.git'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh '''
+                    export PATH=$PATH:/usr/local/go/bin
+                    go version
+                    go test .
+                '''
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'docker build . -t my-hello-world:v$BUILD_NUMBER'
+            }
+        }
+    }
+}
+---
+
+## Скриншоты
+
+### Настройки проекта (Configure)
+![Настройки проекта](screenshots/configure2.png)
+
+### Console Output
+![Console Output](screenshots/console-output2.png)
+
+### Main
+![Main Page](screenshots/main-page2.png)
+
+---
