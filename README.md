@@ -1,3 +1,4 @@
+
 # Домашнее задание 8.2. Что такое DevOps. CI/CD
 
 ## Задание 1: Настройка Jenkins и создание Freestyle Project
@@ -19,7 +20,8 @@
 export PATH=$PATH:/usr/local/go/bin
 go version
 go test .
-docker build . -t my-hello-world:v1```
+docker build . -t my-hello-world:v1
+```
 
 
 ---
