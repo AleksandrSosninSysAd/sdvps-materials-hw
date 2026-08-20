@@ -73,6 +73,7 @@ pipeline {
         }
     }
 }
+```
 ---
 
 ## Скриншоты
@@ -87,3 +88,78 @@ pipeline {
 ![Main Page](screenshots/main-page2.png)
 
 ---
+---
+
+## Задание 3: Установка Nexus и загрузка бинарного файла
+
+### Что было сделано:
+1. **Установлен Nexus** в Docker контейнере (порт 8081 для UI, 8082 для Docker registry)
+2. **Создан raw-hosted репозиторий** `my-releases` в Nexus
+3. **Изменен Pipeline** в Jenkins:
+   - Вместо сборки Docker-образа собирается бинарный Go-файл (`myapp`)
+   - Бинарный файл загружается в Nexus через `curl`
+4. **Настроены Credentials** в Jenkins для авторизации в Nexus
+
+### Скрипт Pipeline:
+```groovy
+pipeline {
+    agent any
+    
+    stages {
+        stage('Git') {
+            steps {
+                git branch: 'main', url: 'https://github.com/AleksandrSosninSysAd/sdvps-materials-hw.git'
+            }
+        }
+        
+        stage('Test') {
+            steps {
+                sh '''
+                    export PATH=$PATH:/usr/local/go/bin
+                    go version
+                    go test .
+                '''
+            }
+        }
+        
+        stage('Build Binary') {
+            steps {
+                sh '''
+                    export PATH=$PATH:/usr/local/go/bin
+                    CGO_ENABLED=0 GOOS=linux go build -a -installsuffix nocgo -o myapp .
+                    ls -la myapp
+                '''
+            }
+        }
+        
+        stage('Upload to Nexus') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'nexus-credentials', passwordVariable: 'NEXUS_PASS', usernameVariable: 'NEXUS_USER')]) {
+                        sh '''
+                            curl -v -u $NEXUS_USER:$NEXUS_PASS \
+                            --upload-file myapp \
+                            http://127.0.0.1:8081/repository/my-releases/myapp-$BUILD_NUMBER
+                        '''
+                    }
+                }
+            }
+        }
+    }
+}
+```
+---
+
+## Скриншоты
+
+### Настройки проекта (Configure)
+![Pipeline Configure Task 3](screenshots/nexus-pipeline-configure.png)
+
+### Console Output
+![Console Output Task 3](screenshots/nexus-console-output.png)
+
+### Main
+![Nexus my-releases](screenshots/nexus-my-releases.png)
+
+---
+
