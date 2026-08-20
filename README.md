@@ -20,3 +20,14 @@ export PATH=$PATH:/usr/local/go/bin
 go version
 go test .
 docker build . -t my-hello-world:v1
+
+
+---
+
+## Скриншоты
+
+### Настройки проекта (Configure)
+![Настройки проекта](screenshots/configure.png)
+
+### Console Output
+![Console Output](screenshots/console-output.png)
