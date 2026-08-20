@@ -19,7 +19,7 @@
 export PATH=$PATH:/usr/local/go/bin
 go version
 go test .
-docker build . -t my-hello-world:v1
+docker build . -t my-hello-world:v1```
 
 
 ---
